@@ -1,0 +1,49 @@
+/*
+ * Tema Flamengo — Webcheckout v2
+ *
+ * Sobrescreve apenas os tokens que diferem do tema default.
+ * O :root do tailwind.css é a base — este arquivo é injetado depois via
+ * <style id="client-theme"> e vence na cascata CSS.
+ */
+
+/* Fonte customizada do cliente */
+@font-face {
+	font-family: "Flamengo Sans";
+	src: url("/fonts/flamengo/FlamengoSans-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Flamengo Sans";
+	src: url("/fonts/flamengo/FlamengoSans-Medium.woff2") format("woff2");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Flamengo Sans";
+	src: url("/fonts/flamengo/FlamengoSans-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	/* Brand — Vermelho e preto do Flamengo */
+	--primary: oklch(0.45 0.22 27.3);             /* vermelho Flamengo ~#E30613 */
+	--primary-foreground: oklch(1 0 0);            /* branco */
+
+	/* Ring segue o primary */
+	--ring: oklch(0.45 0.22 27.3);
+
+	/* Charts — ajustados para a paleta do cliente */
+	--chart-1: oklch(0.45 0.22 27.3);             /* vermelho primário */
+	--chart-2: oklch(0.2 0.01 0);                 /* preto suave */
+
+	/* Tipografia */
+	--font-sans: "Flamengo Sans", "Montserrat Variable", sans-serif;
+	--font-heading: "Flamengo Sans", "Montserrat Variable", sans-serif;
+}

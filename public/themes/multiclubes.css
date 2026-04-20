@@ -1,0 +1,43 @@
+/*
+ * Tema default — Webcheckout v2
+ * Este arquivo é uma referência dos tokens base definidos em src/tailwind.css.
+ * Não é carregado em runtime — o tailwind.css já define estes valores em :root.
+ * Use como base ao criar novos temas de cliente.
+ */
+
+:root {
+	/* Surfaces */
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.137 0.014 237.3);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.137 0.014 237.3);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.137 0.014 237.3);
+
+	/* Brand */
+	--primary: oklch(0.383 0.113 238.7);           /* #005891 */
+	--primary-foreground: oklch(1 0 0);
+
+	/* Secondary / neutral */
+	--secondary: oklch(0.967 0.006 213.5);
+	--secondary-foreground: oklch(0.137 0.014 237.3);
+
+	/* Muted */
+	--muted: oklch(0.967 0.006 213.5);
+	--muted-foreground: oklch(0.468 0.022 220.6);
+
+	/* Accent */
+	--accent: oklch(0.967 0.006 213.5);
+	--accent-foreground: oklch(0.137 0.014 237.3);
+
+	/* Destructive */
+	--destructive: oklch(0.577 0.245 27.325);
+
+	/* Borders & inputs */
+	--border: oklch(0.894 0.014 218.4);
+	--input: oklch(0.894 0.014 218.4);
+	--ring: oklch(0.383 0.113 238.7);
+
+	/* Radius */
+	--radius: 0.5rem;
+}

@@ -12,25 +12,35 @@ export function AccountCard({ account }: AccountCardProps) {
 	if (!account.Code) return null;
 
 	return (
-		<div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-3">
+		<article
+			className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-3"
+			aria-label={`Conta de ${account.Owner}, código ${account.Code}`}
+		>
 			<div className="flex items-center justify-between">
 				<span className="text-sm font-semibold text-foreground">
 					{account.Owner}
 				</span>
-				<Button variant="ghost" size="icon-sm" aria-label="Opções da conta">
-					<Ellipsis className="size-4 text-muted-foreground" />
+				<Button
+					variant="ghost"
+					size="icon-sm"
+					aria-label={`Opções da conta ${account.Code}`}
+				>
+					<Ellipsis className="size-4 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</div>
 
-			<div className="flex items-center justify-between text-xs text-muted-foreground">
-				<span>
-					Consumo:{" "}
-					<span className="font-medium text-foreground">
+			<dl className="flex items-center justify-between text-xs text-muted-foreground">
+				<div className="flex gap-1">
+					<dt>Consumo:</dt>
+					<dd className="font-medium text-foreground">
 						{formatCurrency(account.PayableValue)}
-					</span>
-				</span>
-				<span>Código: {account.Code}</span>
-			</div>
-		</div>
+					</dd>
+				</div>
+				<div className="flex gap-1">
+					<dt>Código:</dt>
+					<dd>{account.Code}</dd>
+				</div>
+			</dl>
+		</article>
 	);
 }

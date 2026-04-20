@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/stores/auth.store";
+import { loginUser } from "@/services/auth.service";
 
 export const Route = createFileRoute("/$client/entrar")({
 	beforeLoad: ({ params }) => {
@@ -19,10 +20,6 @@ export const Route = createFileRoute("/$client/entrar")({
 	},
 	component: EntrarPage,
 });
-
-const API_URL = import.meta.env.VITE_API_URL as string;
-const ACCOUNT_PATH = import.meta.env.VITE_ACCOUNT_PATH as string;
-const AUTH_KEY = import.meta.env.VITE_AUTH_KEY as string;
 
 const schema = z.object({
 	credential: z.string().min(1, "Credencial obrigatória"),
@@ -44,50 +41,18 @@ function EntrarPage() {
 	} = useForm<FormValues>({ resolver: zodResolver(schema) });
 
 	async function onSubmit(data: FormValues) {
-		const url = `${API_URL}/${ACCOUNT_PATH}/login`;
-		const body = { Credential: data.credential, Password: data.senha };
-
-		console.group("[login] POST", url);
-		console.log("body:", body);
-
 		try {
-			const response = await fetch(url, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					_AuthenticationKey: AUTH_KEY,
-				},
-				body: JSON.stringify(body),
-			});
-
-		const responseText = await response.text();
-		let responseBody: unknown;
-		try {
-			responseBody = JSON.parse(responseText);
-		} catch {
-			responseBody = responseText;
-		}
-
-			console.log("status:", response.status);
-			console.log("response:", responseBody);
-			console.groupEnd();
-
-			if (!response.ok) {
-				toast.error("Credencial ou senha inválidos.");
-				return;
-			}
+			const result = await loginUser(data);
 
 			setSession({
-				...(responseBody as Omit<Parameters<typeof setSession>[0], "Email" | "origin">),
+				...result,
 				Email: data.credential,
 				origin: client,
 			});
 
 			void navigate({ to: "/$client", params: { client } });
-		} catch (err) {
-			console.error("network error:", err);
-			console.groupEnd();
-			toast.error("Não foi possível conectar ao servidor. Tente novamente.");
+		} catch {
+			toast.error("Credencial ou senha inválidos.");
 		}
 	}
 
@@ -99,7 +64,7 @@ function EntrarPage() {
 				<div className="mb-8 flex items-center justify-center gap-2">
 					<img
 						src={`/images/${client.toLowerCase()}/logo-light.svg`}
-						alt={client}
+						alt={`Logo ${client}`}
 						className="h-8 w-auto"
 						onError={(e) => {
 							(e.currentTarget as HTMLImageElement).style.display = "none";
@@ -120,13 +85,19 @@ function EntrarPage() {
 						<Input
 							id="credential"
 							type="text"
+							inputMode="email"
 							placeholder="Digite seu e-mail ou código do título"
 							autoComplete="username"
+							autoCapitalize="none"
+							spellCheck={false}
 							aria-invalid={!!errors.credential}
+							aria-describedby={errors.credential ? "credential-error" : undefined}
 							{...register("credential")}
 						/>
 						{errors.credential && (
-							<p className="text-xs text-destructive">{errors.credential.message}</p>
+							<p id="credential-error" role="alert" className="text-xs text-destructive">
+								{errors.credential.message}
+							</p>
 						)}
 					</div>
 
@@ -141,6 +112,7 @@ function EntrarPage() {
 								autoComplete="current-password"
 								className="pr-10"
 								aria-invalid={!!errors.senha}
+								aria-describedby={errors.senha ? "senha-error" : undefined}
 								{...register("senha")}
 							/>
 							<button
@@ -151,21 +123,25 @@ function EntrarPage() {
 								aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
 							>
 								{showPassword ? (
-									<EyeOff className="size-4" />
+									<EyeOff className="size-4" aria-hidden="true" />
 								) : (
-									<Eye className="size-4" />
+									<Eye className="size-4" aria-hidden="true" />
 								)}
 							</button>
 						</div>
 						{errors.senha && (
-							<p className="text-xs text-destructive">{errors.senha.message}</p>
+							<p id="senha-error" role="alert" className="text-xs text-destructive">
+								{errors.senha.message}
+							</p>
 						)}
 					</div>
 
 					{/* Esqueci a senha */}
 					<button
 						type="button"
-						className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+						disabled
+						aria-disabled="true"
+						className="text-sm font-medium text-primary underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						Esqueci a senha
 					</button>
@@ -176,6 +152,7 @@ function EntrarPage() {
 						size="lg"
 						className="w-full rounded-full"
 						disabled={isSubmitting}
+						aria-busy={isSubmitting}
 					>
 						{isSubmitting ? "Acessando..." : "Acessar conta"}
 					</Button>
@@ -187,7 +164,9 @@ function EntrarPage() {
 				Não tem uma conta?{" "}
 				<button
 					type="button"
-					className="font-medium text-primary underline-offset-4 hover:underline"
+					disabled
+					aria-disabled="true"
+					className="font-medium text-primary underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					Criar conta
 				</button>

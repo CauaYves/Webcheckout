@@ -33,10 +33,6 @@ function HomePage() {
 		isAccountRechargeable(a, { allowPosPaidRecharge }),
 	);
 
-	const accountNumbers = accounts
-		.filter((a) => a.PayableValue > 0)
-		.map((a) => a.AccountNumber);
-
 	return (
 		<div className="flex min-h-svh flex-col">
 			{/* Header */}
@@ -55,17 +51,24 @@ function HomePage() {
 				<button
 					type="button"
 					className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5"
-					aria-label="Selecionar perfil"
+					aria-label={`Selecionar perfil de ${firstName}`}
 				>
-					{initials}
-					<ChevronDown className="size-3.5" />
+					<span aria-hidden="true">{initials}</span>
+					<ChevronDown className="size-3.5" aria-hidden="true" />
 				</button>
 			</header>
 
 			{/* Total a pagar */}
-			<section className="flex flex-col items-center gap-1 px-6 py-6">
+			<section
+				className="flex flex-col items-center gap-1 px-6 py-6"
+				aria-label="Resumo financeiro"
+			>
 				<span className="text-xs text-muted-foreground">Total a pagar</span>
-				<span className="text-3xl font-bold tracking-tight text-foreground">
+				<span
+					className="text-3xl font-bold tracking-tight text-foreground"
+					aria-live="polite"
+					aria-atomic="true"
+				>
 					{formatCurrency(totalToPay)}
 				</span>
 			</section>
@@ -76,11 +79,19 @@ function HomePage() {
 					Suas contas de consumo
 				</h2>
 
-				<div className="flex flex-col gap-3">
-					{accounts.map((account) => (
-						<AccountCard key={account.AccountNumber} account={account} />
-					))}
-				</div>
+				{accounts.length === 0 ? (
+					<p className="text-sm text-muted-foreground">
+						Nenhuma conta de consumo encontrada.
+					</p>
+				) : (
+					<ul className="flex flex-col gap-3" aria-label="Contas de consumo">
+						{accounts.map((account) => (
+							<li key={account.AccountNumber}>
+								<AccountCard account={account} />
+							</li>
+						))}
+					</ul>
+				)}
 			</section>
 
 			{/* Ações — fixadas no rodapé */}
@@ -93,6 +104,7 @@ function HomePage() {
 					)}
 					disabled={totalToPay === 0}
 					aria-label={`Pagar consumo total de ${formatCurrency(totalToPay)}`}
+					aria-disabled={totalToPay === 0}
 				>
 					Pagar consumo total
 				</Button>
@@ -102,6 +114,7 @@ function HomePage() {
 						variant="outline"
 						size="lg"
 						className="w-full rounded-full"
+						aria-label="Fazer recarga nas contas elegíveis"
 					>
 						Fazer recarga
 					</Button>

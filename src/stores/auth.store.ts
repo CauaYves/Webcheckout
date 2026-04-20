@@ -7,14 +7,24 @@ export interface LoginTitle {
 	Code: string;
 }
 
+/**
+ * Dados da sessão do usuário autenticado.
+ *
+ * Campos vindos diretamente da resposta da API de login (PascalCase):
+ *   LoginMode, Titles, CloudAccountEid, Name, Document
+ *
+ * Campos adicionados pelo cliente para controle de sessão (camelCase):
+ *   Email    — credencial usada no login (pode ser e-mail ou código)
+ *   origin   — slug do cliente (ex: "flamengo") usado para validar a sessão por rota
+ */
 export interface Session {
-	// Campos retornados pela API
+	// Campos da API
 	LoginMode: number;
 	Titles: LoginTitle[];
 	CloudAccountEid: number;
 	Name: string;
 	Document: string;
-	// Campos artificiais do token
+	// Campos locais
 	Email: string;
 	origin: string;
 }

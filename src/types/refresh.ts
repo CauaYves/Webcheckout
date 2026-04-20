@@ -1,5 +1,9 @@
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
+/**
+ * Tipo de conta: sócio, visitante ou hóspede de hotel.
+ * Usado para determinar regras de exibição e recarga.
+ */
 export const AccountType = {
 	Member: 0,
 	Visitor: 1,
@@ -8,6 +12,10 @@ export const AccountType = {
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
+/**
+ * Status operacional da conta de consumo.
+ * Apenas contas com status Active são elegíveis para recarga.
+ */
 export const AccountStatus = {
 	Active: 0,
 	Blocked: 1,

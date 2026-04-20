@@ -16,9 +16,8 @@ export function isAccountRechargeable(
 	if (account.Status !== AccountStatus.Active) return false;
 
 	const isPrePaid = account.CreditLimit === null;
-	const isPosPaid = account.CreditLimit !== null;
 
-	return isPrePaid || (isPosPaid && allowPosPaidRecharge);
+	return isPrePaid || allowPosPaidRecharge;
 }
 
 /**
@@ -26,7 +25,8 @@ export function isAccountRechargeable(
  * Ex: "Eduardo Santos" → "ES"
  */
 export function getInitials(name: string): string {
-	const parts = name.trim().split(/\s+/);
+	const parts = name.trim().split(/\s+/).filter(Boolean);
+	if (parts.length === 0) return "?";
 	if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
 	return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
@@ -36,5 +36,5 @@ export function getInitials(name: string): string {
  * Ex: "Eduardo Santos" → "Eduardo"
  */
 export function getFirstName(name: string): string {
-	return name.trim().split(/\s+/)[0];
+	return name.trim().split(/\s+/)[0] ?? "";
 }

@@ -5,11 +5,23 @@ import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
+const API_TARGET = "https://dev-tst-multiclubes.multiclubes.com.br";
+
 // https://vite.dev/config/
 export default defineConfig({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
+		},
+	},
+	server: {
+		proxy: {
+			"/api": {
+				target: API_TARGET,
+				changeOrigin: true,
+				followRedirects: true,
+				rewrite: (path) => path.replace(/^\/api/, ""),
+			},
 		},
 	},
 	plugins: [

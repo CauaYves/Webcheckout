@@ -60,12 +60,13 @@ function EntrarPage() {
 				body: JSON.stringify(body),
 			});
 
-			let responseBody: unknown;
-			try {
-				responseBody = await response.json();
-			} catch {
-				responseBody = await response.text();
-			}
+		const responseText = await response.text();
+		let responseBody: unknown;
+		try {
+			responseBody = JSON.parse(responseText);
+		} catch {
+			responseBody = responseText;
+		}
 
 			console.log("status:", response.status);
 			console.log("response:", responseBody);

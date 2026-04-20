@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -37,24 +38,23 @@ function EntrarPage() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 	} = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-	async function onSubmit(data: FormValues) {
-		try {
-			const result = await loginUser(data);
-
+	const loginMutation = useMutation({
+		mutationFn: loginUser,
+		onSuccess: (result, variables) => {
 			setSession({
 				...result,
-				Email: data.credential,
+				Email: variables.credential,
 				origin: client,
 			});
-
 			void navigate({ to: "/$client", params: { client } });
-		} catch {
+		},
+		onError: () => {
 			toast.error("Credencial ou senha inválidos.");
-		}
-	}
+		},
+	});
 
 	return (
 		<div className="relative flex min-h-svh flex-col px-6">
@@ -78,7 +78,11 @@ function EntrarPage() {
 				</h1>
 
 				{/* Formulário */}
-				<form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+				<form
+					onSubmit={handleSubmit((data) => loginMutation.mutate(data))}
+					noValidate
+					className="space-y-5"
+				>
 					{/* Credencial */}
 					<div className="space-y-1.5">
 						<Label htmlFor="credential">E-mail ou código do título</Label>
@@ -151,10 +155,10 @@ function EntrarPage() {
 						type="submit"
 						size="lg"
 						className="w-full rounded-full"
-						disabled={isSubmitting}
-						aria-busy={isSubmitting}
+						disabled={loginMutation.isPending}
+						aria-busy={loginMutation.isPending}
 					>
-						{isSubmitting ? "Acessando..." : "Acessar conta"}
+						{loginMutation.isPending ? "Acessando..." : "Acessar conta"}
 					</Button>
 				</form>
 			</div>

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ClientRouteRouteImport } from './routes/$client/route'
 import { Route as ClientIndexRouteImport } from './routes/$client/index'
 import { Route as ClientEntrarRouteImport } from './routes/$client/entrar'
+import { Route as ClientContaAccountNumberRouteImport } from './routes/$client/conta/$accountNumber'
 
 const ClientRouteRoute = ClientRouteRouteImport.update({
   id: '/$client',
@@ -28,28 +29,46 @@ const ClientEntrarRoute = ClientEntrarRouteImport.update({
   path: '/entrar',
   getParentRoute: () => ClientRouteRoute,
 } as any)
+const ClientContaAccountNumberRoute =
+  ClientContaAccountNumberRouteImport.update({
+    id: '/conta/$accountNumber',
+    path: '/conta/$accountNumber',
+    getParentRoute: () => ClientRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/$client': typeof ClientRouteRouteWithChildren
   '/$client/entrar': typeof ClientEntrarRoute
   '/$client/': typeof ClientIndexRoute
+  '/$client/conta/$accountNumber': typeof ClientContaAccountNumberRoute
 }
 export interface FileRoutesByTo {
   '/$client/entrar': typeof ClientEntrarRoute
   '/$client': typeof ClientIndexRoute
+  '/$client/conta/$accountNumber': typeof ClientContaAccountNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/$client': typeof ClientRouteRouteWithChildren
   '/$client/entrar': typeof ClientEntrarRoute
   '/$client/': typeof ClientIndexRoute
+  '/$client/conta/$accountNumber': typeof ClientContaAccountNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$client' | '/$client/entrar' | '/$client/'
+  fullPaths:
+    | '/$client'
+    | '/$client/entrar'
+    | '/$client/'
+    | '/$client/conta/$accountNumber'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$client/entrar' | '/$client'
-  id: '__root__' | '/$client' | '/$client/entrar' | '/$client/'
+  to: '/$client/entrar' | '/$client' | '/$client/conta/$accountNumber'
+  id:
+    | '__root__'
+    | '/$client'
+    | '/$client/entrar'
+    | '/$client/'
+    | '/$client/conta/$accountNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -79,17 +98,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientEntrarRouteImport
       parentRoute: typeof ClientRouteRoute
     }
+    '/$client/conta/$accountNumber': {
+      id: '/$client/conta/$accountNumber'
+      path: '/conta/$accountNumber'
+      fullPath: '/$client/conta/$accountNumber'
+      preLoaderRoute: typeof ClientContaAccountNumberRouteImport
+      parentRoute: typeof ClientRouteRoute
+    }
   }
 }
 
 interface ClientRouteRouteChildren {
   ClientEntrarRoute: typeof ClientEntrarRoute
   ClientIndexRoute: typeof ClientIndexRoute
+  ClientContaAccountNumberRoute: typeof ClientContaAccountNumberRoute
 }
 
 const ClientRouteRouteChildren: ClientRouteRouteChildren = {
   ClientEntrarRoute: ClientEntrarRoute,
   ClientIndexRoute: ClientIndexRoute,
+  ClientContaAccountNumberRoute: ClientContaAccountNumberRoute,
 }
 
 const ClientRouteRouteWithChildren = ClientRouteRoute._addFileChildren(

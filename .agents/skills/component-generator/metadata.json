@@ -1,0 +1,6 @@
+{
+  "name": "component-generator",
+  "version": "1.0.0",
+  "description": "Skill especializada em criar componentes React seguindo os padrões do Webcheckout-v2 (Tailwind v4, Radix, data-slots).",
+  "author": "opencode"
+}

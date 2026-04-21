@@ -135,7 +135,10 @@ function HomePage() {
 					<ul className="flex flex-col gap-3" aria-label="Contas de consumo">
 						{accounts.map((account) => (
 							<li key={account.AccountNumber}>
-								<AccountCard account={account} />
+								<AccountCard
+									account={account}
+									allowPosPaidRecharge={allowPosPaidRecharge}
+								/>
 							</li>
 						))}
 					</ul>
